@@ -2,13 +2,11 @@
 
 > 基于 Vue3 +Ant-Design-Vue+Tiptap 二次开发一个包含常用功能富文本编辑器
 
-<p>
-  <a href="https://htmlxudong.github.io/index.html" target="_blank" rel="noopener noreferrer">
-    <img width="100%" src="./public/editor.png" alt="vue3-editor"/>
-  </a>
-</p>
+## 演示
 
-[在线预览 github](https://htmlxudong.github.io/index.html)
+![tiptap-ant-design-vue](https://github.com/Entity-Now/tiptap-ant-design-vue/blob/master/public/preview.gif)
+
+## 安装
 
 ## 技术栈 🥇
 
