@@ -17,7 +17,7 @@
   ],
   "description": "tiptap-ant-design-vue一款基于tiptap+ant designer的vue3富文本编辑器。",
   "private": false,
-  "version": "1.0.6",
+  "version": "1.0.7",
   "type": "module",
   "main": "./src/index.ts",
   "module": "./lib/tiptap-ant-design-vue.js",
@@ -70,6 +70,7 @@
     "@vue/tsconfig": "^0.7.0",
     "cross-env": "^7.0.3",
     "typescript": "~5.7.2",
+    "unplugin-vue-components": "^28.5.0",
     "vite": "^6.2.0",
     "vue-tsc": "^2.2.4"
   }

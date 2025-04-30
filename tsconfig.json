@@ -17,7 +17,6 @@
     "paths": {
       "@/*": ["./src/*"],
       "demo/*": ["./demo/*"],
-      "tiptap-ant-design-vue": ["./src/index.ts"]
     },
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
     "isolatedModules": true

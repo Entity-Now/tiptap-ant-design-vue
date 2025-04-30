@@ -3,6 +3,8 @@ import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
 import dts from "vite-plugin-dts";
+import Components from 'unplugin-vue-components/vite';
+import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
 
 // https://vite.dev/config/
 const libDir = path.resolve(__dirname, "lib");
@@ -14,6 +16,13 @@ export default ({ mode }: any) => {
 		base: IS_DEMO ? '/tiptap-ant-design-vue/' : undefined,
 		plugins: [
 			vue(),
+			Components({
+				resolvers: [
+					AntDesignVueResolver({
+					importStyle: false, // css in js
+					}),
+				],
+			}),
 			IS_DEMO
 				? null
 				: dts({
