@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import Vue3Tiptap from "@/components/vue3-tiptap/index.vue";
+import Vue3Tiptap from "tiptap-ant-design-vue";
 import Header from "./header/header.vue";
 import "highlight.js/scss/github.scss"
 
