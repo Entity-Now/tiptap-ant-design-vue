@@ -1,7 +1,37 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "compilerOptions": {
+    "target": "es6",
+    "module": "esnext",
+    "strict": true,
+    "jsx": "preserve",
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "typeRoots": ["./types", "./node_modules/@types"],
+    "types": ["element-plus/global"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "demo/*": ["./demo/*"],
+      "tiptap-ant-design-vue": ["./src/index.ts"]
+    },
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+    "isolatedModules": true
+  },
+  "include": [
+    "types/**/*",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "demo/**/*.vue",
+    "demo/**/*.ts",
+    "demo/**/*.tsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
+  ],
+  "exclude": ["node_modules"]
 }

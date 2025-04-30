@@ -8,6 +8,35 @@
 
 ## 安装
 
+```sh
+npm i tiptap-ant-design-vue
+```
+
+## 简单使用
+
+```js
+<template>
+	<Vue3Tiptap v-model:content="content" :uploadImage="uploadImageHandle" mode="bubble"/>
+</template>
+
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+import Vue3Tiptap from "@/components/vue3-tiptap/index.vue";
+import "highlight.js/scss/github.scss"
+
+const content = ref(``)
+
+const uploadImageHandle = ()=>{
+	console.log('上传记录..');
+	return Promise.resolve({url: 'http://localhost:8888/src/assets/home-logo.jpeg',size: 123,fileName: 'name.png'})
+}
+
+watch(()=> content.value,(val)=>{
+	console.log(val);
+})
+</script>
+```
+
 ## 技术栈 🥇
 
 核心：vue3 + ant-design-vue + vite
