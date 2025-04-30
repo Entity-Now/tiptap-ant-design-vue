@@ -1,29 +1,12 @@
 import TiptapAntDesign from '@/components/vue3-tiptap/index.vue'
+import type {
+	TiptapProps,
+	TiptapEmits
+} from '@/components/vue3-tiptap/vue3-tiptap'
+
 export {
-	Focus,
-	Underline,
-	Color,
-	Highlight,
-	TextAlign,
-	FontFamily,
-	Link,
-	Images,
-	Video,
-	Table,
-	TableHeader,
-	TableRow,
-	CustomTableCell,
-	CustomOrderedList,
-	CustomBulletList,
-	CustomIndent,
-	CodeBlockLights,
-	lowlight,
-	searchReplace,
-	Iframe,
-	CustomTextStyle,
-	FormatBrush,
-	LineHeight,
-	Hand
-} from "@/components/vue3-tiptap/extensions/index";
+	TiptapProps,
+	TiptapEmits
+}
 
 export default TiptapAntDesign;
