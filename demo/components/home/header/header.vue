@@ -14,7 +14,7 @@
 			<!-- <li class="item"><span>语言</span></li>
       <li class="item"><span>主题</span></li> -->
 			<li class="item">
-				<a class="a-tag" href="https://github.com/htmlxudong/vue3-tiptap" target="_blank"
+				<a class="a-tag" href="https://github.com/Entity-Now/tiptap-ant-design-vue" target="_blank"
 					><GithubOutlined
 				/></a>
 			</li>

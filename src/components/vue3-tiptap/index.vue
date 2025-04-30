@@ -19,7 +19,7 @@ import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
 import Toolbar from "./toolbar/classic/index.vue";
 import type { TiptapProps, TiptapEmits } from "./vue3-tiptap";
-import { EditorKey, ToggleFullScreenKey, IsFullScreenKey } from "./vue3-tiptap";
+import { EditorKey, ToggleFullScreenKey, IsFullScreenKey, uploadImageKey, uploadVideoKey } from "./vue3-tiptap";
 import handView from "./extension-view/hand-view.vue";
 import {
 	Focus,
@@ -134,6 +134,8 @@ const getWordCount = (editor: any) => {
 	wordCount.value = text.length;
 };
 provide(EditorKey, editor)
+provide(uploadImageKey, props.uploadImage)
+provide(uploadVideoKey, props.uploadVideo)
 provide(IsFullScreenKey, isFullScreen.value);
 provide(ToggleFullScreenKey, toggleFullscreen);
 

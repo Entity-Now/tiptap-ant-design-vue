@@ -20,7 +20,7 @@
 
 ## 感谢 🌸
 
-本项目fork自[Vue3-Tiptap](https://github.com/htmlxudong/vue3-tiptap)，由于作者没有将其上传值npm，并且我需要添加一些额外功能，所以fork后重新发布。
+本项目fork自[Vue3-Tiptap](https://github.com/htmlxudong/vue3-tiptap)，由于作者没有将其上传至npm，并且我需要添加一些额外功能，所以fork后重新发布。
 
 ## 更新日志 📄
 

@@ -6,7 +6,10 @@
 					<PaperClipOutlined style="margin-right: 5px" />插入URL
 				</li>
 				<li class="dropdown__opeartion" @click="uploadRef.showModal()">
-					<CloudUploadOutlined style="margin-right: 5px" />上传图片
+					<CloudUploadOutlined style="margin-right: 5px" />上传Base64图片
+				</li>
+				<li class="dropdown__opeartion" @click="customUploadImage">
+					<CloudUploadOutlined style="margin-right: 5px" />上传图片到后台
 				</li>
 			</ul>
 		</template>
@@ -29,7 +32,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, inject } from "vue";
+import { uploadImageKey } from '../../vue3-tiptap'
 import { PictureOutlined, CloudUploadOutlined, PaperClipOutlined } from "@ant-design/icons-vue";
 import { validateUrl } from "@/utils/pattern";
 import InsertImage from "./insert-model/index.vue";
@@ -56,8 +60,21 @@ const headers = [
 	}
 ];
 
+const uploadImage = inject<any>(uploadImageKey);
 const insertRef = ref();
 const uploadRef = ref();
+
+const customUploadImage = ()=>{
+	uploadImage().then((res: {
+		url: string;
+		size?: number;
+		fileName: string;
+	})=>{
+		if(res && res?.url){
+			props.editor.chain().focus().setImage({ src: res.url }).run();
+		}
+	})
+}
 
 const handleEmit = async ({ url, file, type }: { url: string; file: File; type: string }) => {
 	if (type === "upload") {

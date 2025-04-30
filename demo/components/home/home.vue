@@ -6,7 +6,7 @@
 				<div class="title-wrap">
 					<div class="logo"><img src="@/assets/facio.png" alt="" /></div>
 					<div class="title-combination">
-						<h1>vue3-tiptap</h1>
+						<h1>tiptap-ant-design-vue</h1>
 						<h4>This is a powerful rich text editor</h4>
 					</div>
 				</div>
@@ -17,7 +17,7 @@
 			</div>
 		</div>
 		<div class="right">
-			<div class="editor-box"><Vue3Tiptap v-model:content="content" mode="bubble"/></div>
+			<div class="editor-box"><Vue3Tiptap v-model:content="content" :uploadImage="uploadImageHandle" mode="bubble"/></div>
 		</div>
 	</div>
 </template>
@@ -29,6 +29,11 @@ import Header from "./header/header.vue";
 import "highlight.js/scss/github.scss"
 
 const content = ref(``)
+
+const uploadImageHandle = ()=>{
+	console.log('上传记录..');
+	return Promise.resolve({url: 'http://localhost:8888/src/assets/home-logo.jpeg',size: 123,fileName: 'name.png'})
+}
 
 watch(()=> content.value,(val)=>{
 	console.log(val);

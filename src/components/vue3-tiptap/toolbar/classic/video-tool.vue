@@ -6,7 +6,10 @@
 					<PaperClipOutlined style="margin-right: 5px" />插入网络视频
 				</li>
 				<li class="dropdown__opeartion" @click="uploadRef.showModal">
-					<CloudUploadOutlined style="margin-right: 5px" />上传本地视频
+					<CloudUploadOutlined style="margin-right: 5px" />上传Base64视频
+				</li>
+				<li class="dropdown__opeartion" @click="customUploadImage">
+					<CloudUploadOutlined style="margin-right: 5px" />上传视频到服务器
 				</li>
 			</ul>
 		</template>
@@ -32,7 +35,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, inject } from "vue";
+import { uploadVideoKey } from '../../vue3-tiptap'
 import { VideoCameraOutlined, CloudUploadOutlined, PaperClipOutlined } from "@ant-design/icons-vue";
 import { validateUrl } from "@/utils/pattern.js";
 import { _getBase64 } from "@/utils/index";
@@ -62,8 +66,22 @@ const headers = [
 	}
 ];
 
+const uploadVideo = inject<any>(uploadVideoKey);
 const insertRef = ref();
 const uploadRef = ref();
+
+const customUploadImage = ()=>{
+	uploadVideo().then((res: {
+		url: string;
+		size?: number;
+		fileName: string;
+	})=>{
+		if(res && res?.url){
+			props.editor.chain().focus().setVideo({ src: res.url }).run();
+		}
+	})
+}
+
 const handleEmit = async ({ url, file, type }: EmitType) => {
 	if (type === "upload") {
 		const src = await _getBase64(file);
