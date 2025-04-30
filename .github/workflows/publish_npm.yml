@@ -21,6 +21,7 @@ jobs:
 
       # 2. 安装依赖并发布到 npm
       - run: npm install
+      - run: npm run build:lib
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
