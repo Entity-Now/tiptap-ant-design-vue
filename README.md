@@ -21,7 +21,7 @@ npm i tiptap-ant-design-vue
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import Vue3Tiptap from "@/components/vue3-tiptap/index.vue";
+import Vue3Tiptap from "tiptap-ant-design-vue";
 import "highlight.js/scss/github.scss"
 
 const content = ref(``)
