@@ -22,7 +22,7 @@
   "scripts": {
     "dev": "vite",
     "demo:preview": "vite preview",
-    "build:demo": "cross-env VITE_BUILD_TARGET=demo vue-tsc -b && vite build",
+    "build:demo": "cross-env VITE_BUILD_TARGET=demo vite build",
     "build:lib": "vite build",
     "format": "prettier --write \"src/**/*.{js,ts,json,tsx,css,less,scss,vue,html,md}\""
   },

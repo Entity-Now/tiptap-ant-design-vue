@@ -9,8 +9,7 @@ const libDir = path.resolve(__dirname, "lib");
 const srcDir = path.resolve(__dirname, "src");
 export default ({ mode }: any) => {
 	process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
-	const IS_DEMO = process.env.VITE_BUILD_TARGET === "demo";
-
+	const IS_DEMO = process.env.VITE_BUILD_TARGET == "demo";
 	return defineConfig({
 		plugins: [
 			vue(),
@@ -24,7 +23,7 @@ export default ({ mode }: any) => {
 		resolve: {
 			alias: {
 				"@": resolve(__dirname, "./src"),
-				demo: resolve(__dirname, "./demo"),
+				"demo": resolve(__dirname, "./demo"),
 				"tiptap-ant-design-vue": resolve(__dirname, "./src/index.ts")
 			}
 		},
