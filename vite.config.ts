@@ -11,6 +11,7 @@ export default ({ mode }: any) => {
 	process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
 	const IS_DEMO = process.env.VITE_BUILD_TARGET == "demo";
 	return defineConfig({
+		base: IS_DEMO ? '/tiptap-ant-design-vue/' : undefined,
 		plugins: [
 			vue(),
 			IS_DEMO
