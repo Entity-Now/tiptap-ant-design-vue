@@ -1,20 +1,22 @@
 <template>
-	<div :class="['vue3-tiptap', isFullScreen ? 'editor--fullscreen' : '']">
-		<template v-if='editor'>
-			<Toolbar :editor="editor">
-				<template #tool>
-					<slot name="tool"></slot>
-				</template>
-			</Toolbar>
-			<editor-content :editor="editor" class="editor" />
-		</template>
-		<handView/>
-		<!-- <span class="words">{{ wordCount }}字</span> -->
-	</div>
+	<a-config-provider :getPopupContainer="getPopupContainer">
+		<div ref="Vue3TiptapContainer" :class="['vue3-tiptap', isFullScreen ? 'editor--fullscreen' : '']">
+			<template v-if='editor'>
+				<Toolbar :editor="editor">
+					<template #tool>
+						<slot name="tool"></slot>
+					</template>
+				</Toolbar>
+				<editor-content :editor="editor" class="editor" />
+			</template>
+			<handView />
+			<!-- <span class="words">{{ wordCount }}字</span> -->
+		</div>
+	</a-config-provider>
 </template>
 
 <script setup lang="ts">
-import { onMounted, provide, ref } from "vue";
+import { watch, onMounted, provide, ref } from "vue";
 import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
 import Toolbar from "./toolbar/classic/index.vue";
@@ -51,6 +53,7 @@ import {
 const props = defineProps<TiptapProps>();
 const emits = defineEmits(['update:content'])
 
+const Vue3TiptapContainer = ref<HTMLDivElement | undefined>();
 const extensions = [
 	StarterKit.configure({
 		orderedList: false,
@@ -91,7 +94,7 @@ const extensions = [
 	Images,
 	Video,
 	Table.configure({
-		HTMLAttributes:{
+		HTMLAttributes: {
 			class: "vue3-table-view"
 		},
 		allowTableNodeSelection: true
@@ -133,11 +136,16 @@ const getWordCount = (editor: any) => {
 	const text = editor.getText();
 	wordCount.value = text.length;
 };
+const getPopupContainer = (el: any, dialogContext: any)=>{
+	return Vue3TiptapContainer.value;
+}
+
 provide(EditorKey, editor)
 provide(uploadImageKey, props.uploadImage)
 provide(uploadVideoKey, props.uploadVideo)
 provide(IsFullScreenKey, isFullScreen.value);
 provide(ToggleFullScreenKey, toggleFullscreen);
+
 
 onMounted(() => {
 	getWordCount(editor.value);
@@ -152,9 +160,11 @@ onMounted(() => {
 	border-radius: 5px;
 	background-color: #fff;
 }
-:deep(.x-node-focused:not(.code-block-view):not(.vue3-table-view):not(table)){
-	background: rgb(245,248,252);
+
+:deep(.x-node-focused:not(.code-block-view):not(.vue3-table-view):not(table)) {
+	background: rgb(245, 248, 252);
 }
+
 :deep(.vue3-tiptap) {
 	padding-left: 50px;
 }

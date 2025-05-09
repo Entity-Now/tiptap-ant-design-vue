@@ -2,7 +2,7 @@
 	<node-view-wrapper as="div" class="code-block-view">
 		<div class="code-block-container">
 			<div class="code-block-tools">
-				<a-select ref="select" v-model:value="selectedLanguage">
+				<a-select ref="select" v-model:value="selectedLanguage" @click.prevent>
 					<a-select-option v-for="(language, index) in languages" :value="language" :key="index">{{
 						language
 					}}</a-select-option>
