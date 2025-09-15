@@ -8,8 +8,8 @@
 					</template>
 				</Toolbar>
 				<editor-content :editor="editor" class="editor" />
-				<!-- <handView :editor="editor"/> -->
 			</template>
+			<handView :editor="editor"/>
 			<!-- <span class="words">{{ wordCount }}字</span> -->
 		</div>
 	</a-config-provider>

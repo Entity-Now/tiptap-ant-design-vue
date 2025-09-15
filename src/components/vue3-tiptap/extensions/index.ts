@@ -25,7 +25,7 @@ export { default as Link } from "@tiptap/extension-link";
 
 
 // other 插件
-export { default as Hand } from 'tiptap-extension-global-drag-handle'
+export { default as Hand } from './GlobalDragHandle'
 
 // 自定义插件
 export { default as Images } from "./image";
