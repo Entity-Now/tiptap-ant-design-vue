@@ -9,7 +9,7 @@ import { computed } from "vue";
 import { getIcon } from "./Icon";
 
 type Size = number | string | undefined;
-interface IconType {
+export interface IconType {
 	name: string;
 	color?: string;
 	size?: Size;
