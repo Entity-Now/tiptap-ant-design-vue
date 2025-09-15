@@ -12,16 +12,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      # 1. 安装 Node.js
+     # 1. 安装 Node.js
       - uses: actions/setup-node@v3
         with:
           node-version: '22.11.0'
           registry-url: 'https://registry.npmjs.org'
 
-      # 2. 安装依赖并发布到 npm
-      - run: npm install
-      - run: npm run build:lib
-      - run: npm publish --access public
+      # 2. 安装 pnpm（改用官方 pnpm/action-setup 或 npm 安装）
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest  # 或指定版本，如 "8.15.0"
+
+      # 3. 缓存 pnpm 依赖
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pnpm-store
+            node_modules
+            **/node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+      # 4. 安装依赖并发布到 npm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
