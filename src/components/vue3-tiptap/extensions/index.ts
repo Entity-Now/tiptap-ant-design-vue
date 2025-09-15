@@ -1,14 +1,28 @@
 // tiptap 插件
+export {
+	Focus,
+	Placeholder,
+	UndoRedo,
+	Dropcursor,
+	Gapcursor,
+	CharacterCount
+} from "@tiptap/extensions";
+export {
+	BulletList,
+	OrderedList,
+	ListItem,
+	ListKeymap,
+	TaskList,
+	TaskItem
+} from "@tiptap/extension-list";
+export { Table, TableRow, TableCell, TableHeader } from "@tiptap/extension-table";
 export { default as Underline } from "@tiptap/extension-underline";
 export { default as Color } from "@tiptap/extension-color";
 export { default as Highlight } from "@tiptap/extension-highlight";
 export { default as TextAlign } from "@tiptap/extension-text-align";
 export { default as FontFamily } from "@tiptap/extension-font-family";
-export { default as Table } from "@tiptap/extension-table";
-export { default as TableHeader } from "@tiptap/extension-table-header";
-export { default as TableRow } from "@tiptap/extension-table-row";
 export { default as Link } from "@tiptap/extension-link";
-export { default as Focus } from '@tiptap/extension-focus'
+
 
 // other 插件
 export { default as Hand } from 'tiptap-extension-global-drag-handle'

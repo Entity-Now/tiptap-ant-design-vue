@@ -14,29 +14,34 @@ jobs:
       contents: write  # 允许推送代码
       pages: write    # 如果部署到 GitHub Pages
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+     # 1. 安装 Node.js
+      - uses: actions/setup-node@v3
         with:
-          fetch-depth: 0
-          # 如果你文档需要 Git 子模块，取消注释下一行
-          # submodules: true
+          node-version: '22.11.0'
+          registry-url: 'https://registry.npmjs.org'
 
-
-
-      - name: 设置 Node.js
-        uses: actions/setup-node@v3
+      # 2. 安装 pnpm（改用官方 pnpm/action-setup 或 npm 安装）
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
         with:
-          node-version: 20.18.0
-          cache: npm
+          version: latest  # 或指定版本，如 "8.15.0"
 
-      - name: 安装依赖
-        run: npm ci
+      # 3. 缓存 pnpm 依赖
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pnpm-store
+            node_modules
+            **/node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
 
-      - name: 构建Demo
-        env:
-          NODE_OPTIONS: --max_old_space_size=8192
-        run: |-
-          npm run build:demo
+      # 4. 安装依赖并发布到 npm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build:demo
 
       - name: 部署文档
         uses: JamesIves/github-pages-deploy-action@v4

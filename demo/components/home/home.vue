@@ -17,7 +17,7 @@
 			</div>
 		</div>
 		<div class="right">
-			<div class="editor-box"><Vue3Tiptap v-model:content="content" :uploadImage="uploadImageHandle" mode="bubble"/></div>
+			<div class="editor-box"><Vue3Tiptap v-model:content="content" :uploadImage="uploadImageHandle"/></div>
 		</div>
 	</div>
 </template>

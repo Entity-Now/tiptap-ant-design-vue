@@ -1,6 +1,6 @@
 <template>
+  <!-- 拖拽和功能下拉菜单 -->
   <div class="vue3-drag-hand">
-    <!-- 拖拽和功能下拉菜单 -->
     <a-dropdown>
       <DragOutlined class="icon drag-hand" />
       <template #overlay>
@@ -31,36 +31,36 @@ import { EditorKey } from '../vue3-tiptap'
 import { DragOutlined } from '@ant-design/icons-vue'
 
 // 注入 Tiptap 编辑器实例
-const editor = inject<Ref<Editor>>(EditorKey)
+const props = defineProps<{ editor: Editor }>()
 
 // 插入功能菜单
 const insertMenu = reactive([
   {
     text: '插入新行',
     command: () => {
-      if (!editor?.value) return
-      const { state, view } = editor.value
+      if (!props.editor) return
+      const { state, view } = props.editor
       const { $from } = state.selection
       const insertPos = $from.after()
       const paragraph = state.schema.nodes.paragraph.create()
       const tr = state.tr.insert(insertPos, paragraph)
       view.dispatch(tr)
-      editor.value.commands.focus(insertPos + 1)
+      props.editor.commands.focus(insertPos + 1)
     },
   },
   {
     text: '换行',
-    command: () => editor?.value?.chain().focus().setHardBreak().run(),
+    command: () => props.editor?.chain().focus().setHardBreak().run(),
   },
   {
     text: '代码块',
-    command: () => editor?.value?.chain().focus().toggleCodeBlock().run(),
+    command: () => props.editor?.chain().focus().toggleCodeBlock().run(),
   },
   {
     text: '删除',
     command: () => {
-      if (!editor?.value) return
-      const { state, commands } = editor.value
+      if (!props?.editor) return
+      const { state, commands } = props.editor
       const { $from } = state.selection
       const nodeType = $from.node(1).type.name
       if (nodeType === 'table') {
@@ -74,7 +74,7 @@ const insertMenu = reactive([
 
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .vue3-drag-hand {
   position: fixed !important;
   display: flex;

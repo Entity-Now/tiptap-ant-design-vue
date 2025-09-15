@@ -1,5 +1,5 @@
 <template>
-	<a-config-provider :getPopupContainer="getPopupContainer">
+		<a-config-provider :getPopupContainer="getPopupContainer">
 		<div ref="Vue3TiptapContainer" :class="['vue3-tiptap', isFullScreen ? 'editor--fullscreen' : '']">
 			<template v-if='editor'>
 				<Toolbar :editor="editor">
@@ -8,8 +8,8 @@
 					</template>
 				</Toolbar>
 				<editor-content :editor="editor" class="editor" />
+				<!-- <handView :editor="editor"/> -->
 			</template>
-			<handView />
 			<!-- <span class="words">{{ wordCount }}字</span> -->
 		</div>
 	</a-config-provider>
@@ -21,8 +21,15 @@ import { useEditor, EditorContent } from "@tiptap/vue-3";
 import StarterKit from "@tiptap/starter-kit";
 import Toolbar from "./toolbar/classic/index.vue";
 import type { TiptapProps, TiptapEmits } from "./vue3-tiptap";
-import { EditorKey, ToggleFullScreenKey, IsFullScreenKey, uploadImageKey, uploadVideoKey } from "./vue3-tiptap";
+import {
+	EditorKey,
+	ToggleFullScreenKey,
+	IsFullScreenKey,
+	uploadImageKey,
+	uploadVideoKey
+} from "./vue3-tiptap";
 import handView from "./extension-view/hand-view.vue";
+
 import {
 	Focus,
 	Underline,
@@ -47,11 +54,12 @@ import {
 	CustomTextStyle,
 	FormatBrush,
 	LineHeight,
+	Dropcursor,
 	Hand
 } from "./extensions/index";
 
 const props = defineProps<TiptapProps>();
-const emits = defineEmits(['update:content'])
+const emits = defineEmits(["update:content"]);
 
 const Vue3TiptapContainer = ref<HTMLDivElement | undefined>();
 const extensions = [
@@ -65,12 +73,13 @@ const extensions = [
 			}
 		}
 	}),
+
+	Focus.configure({
+		className: "x-node-focused",
+		mode: "all"
+	}),
 	Hand.configure({
 		dragHandleSelector: ".vue3-drag-hand"
-	}),
-	Focus.configure({
-		className: 'x-node-focused',
-		mode: 'all',
 	}),
 	Underline.configure({
 		HTMLAttributes: {
@@ -110,7 +119,7 @@ const extensions = [
 	Iframe,
 	CustomTextStyle,
 	FormatBrush,
-	LineHeight,
+	LineHeight
 ];
 
 const wordCount = ref(0);
@@ -118,13 +127,13 @@ const editor = useEditor({
 	content: props.content,
 	editorProps: {
 		attributes: {
-			class: 'vue3-tiptap'
+			class: "vue3-tiptap"
 		}
 	},
 	extensions: props.extensions || extensions,
 	onUpdate({ editor }) {
 		getWordCount(editor);
-		emits('update:content', editor.getHTML())
+		emits("update:content", editor.getHTML());
 	}
 });
 
@@ -136,16 +145,15 @@ const getWordCount = (editor: any) => {
 	const text = editor.getText();
 	wordCount.value = text.length;
 };
-const getPopupContainer = (el: any, dialogContext: any)=>{
+const getPopupContainer = (el: any, dialogContext: any) => {
 	return Vue3TiptapContainer.value;
-}
+};
 
-provide(EditorKey, editor)
-provide(uploadImageKey, props.uploadImage)
-provide(uploadVideoKey, props.uploadVideo)
+provide(EditorKey, editor);
+provide(uploadImageKey, props.uploadImage);
+provide(uploadVideoKey, props.uploadVideo);
 provide(IsFullScreenKey, isFullScreen.value);
 provide(ToggleFullScreenKey, toggleFullscreen);
-
 
 onMounted(() => {
 	getWordCount(editor.value);
@@ -165,7 +173,4 @@ onMounted(() => {
 	background: rgb(245, 248, 252);
 }
 
-:deep(.vue3-tiptap) {
-	padding-left: 50px;
-}
 </style>

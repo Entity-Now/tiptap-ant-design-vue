@@ -1,4 +1,4 @@
-import { OrderedList } from "@tiptap/extension-ordered-list";
+import { OrderedList } from '@tiptap/extension-list'
 
 // 定义扩展选项接口
 interface OrderedListOptions {
@@ -20,7 +20,8 @@ const CustomOrderedList = OrderedList.extend<OrderedListOptions>({
 	addOptions() {
 		return {
 			...this.parent?.(),
-			defaultStyle: ""
+			defaultStyle: "",
+			itemTypeName: ListItemName,
 		};
 	},
 	addAttributes() {

@@ -1,4 +1,5 @@
-import TextStyle, { type TextStyleOptions } from "@tiptap/extension-text-style";
+import { type TextStyleOptions } from "@tiptap/extension-text-style";
+import { TextStyle } from "@tiptap/extension-text-style";
 
 interface CustomTextStyleAttributes {
 	fontSize?: number | string | null;
