@@ -79,7 +79,8 @@ const extensions = [
 		mode: "all"
 	}),
 	Hand.configure({
-		dragHandleSelector: ".vue3-drag-hand"
+		dragHandleSelector: ".vue3-drag-hand",
+		dropTargetClass: 'highlight-drop-target'
 	}),
 	Underline.configure({
 		HTMLAttributes: {
@@ -172,5 +173,7 @@ onMounted(() => {
 :deep(.x-node-focused:not(.code-block-view):not(.vue3-table-view):not(table)) {
 	background: rgb(245, 248, 252);
 }
-
+:deep(.tiptap.ProseMirror){
+	padding-left: 35px;
+}
 </style>

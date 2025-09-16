@@ -1,21 +1,18 @@
 <template>
-  <!-- 拖拽和功能下拉菜单 -->
-  <div class="vue3-drag-hand">
-    <a-dropdown>
+  <div :class="['vue3-drag-hand', visible ? 'active' : '']">
+    <a-dropdown :open="visible" @openChange="e=> visible = e" :trigger="['click']" :getPopupContainer="(el)=> el.parentNode" :destroyPopupOnHide="true">
       <DragOutlined class="icon drag-hand" />
       <template #overlay>
         <div class="custom-menu-wrapper">
           <a-menu class="custom-menu">
-            <!-- 插入功能 -->
             <a-menu-item
               v-for="(item, index) in insertMenu"
               :key="`insert-${index}`"
               class="tool-menu-item"
-              @click="item.command"
+              @click="handCommand(item.command)"
             >
               <span class="menu-item-text">{{ item.text }}</span>
             </a-menu-item>
-           
           </a-menu>
         </div>
       </template>
@@ -24,105 +21,131 @@
 </template>
 
 <script setup lang="ts">
-import { inject, reactive } from 'vue'
-import type { Ref } from 'vue'
-import type { Editor } from '@tiptap/core'
-import { EditorKey } from '../vue3-tiptap'
+import { ref, reactive } from 'vue'
+import { Editor } from '@tiptap/core'
+import { Node } from '@tiptap/pm/model'
+import { NodeSelection } from '@tiptap/pm/state'
 import { DragOutlined } from '@ant-design/icons-vue'
 
-// 注入 Tiptap 编辑器实例
 const props = defineProps<{ editor: Editor }>()
+const visible = ref(false)
 
-// 插入功能菜单
-const insertMenu = reactive([
+interface InsertMenuItem {
+  text: string
+  command: (editor: Editor) => void
+}
+
+const insertMenu = reactive<InsertMenuItem[]>([
   {
     text: '插入新行',
-    command: () => {
-      if (!props.editor) return
-      const { state, view } = props.editor
-      const { $from } = state.selection
-      const insertPos = $from.after()
-      const paragraph = state.schema.nodes.paragraph.create()
-      const tr = state.tr.insert(insertPos, paragraph)
-      view.dispatch(tr)
-      props.editor.commands.focus(insertPos + 1)
+    command: (editor: Editor) => {
+      if (!editor) {
+        console.warn('Editor is not initialized')
+        return
+      }
+      editor.commands.createParagraphNear()
     },
-  },
-  {
-    text: '换行',
-    command: () => props.editor?.chain().focus().setHardBreak().run(),
   },
   {
     text: '代码块',
-    command: () => props.editor?.chain().focus().toggleCodeBlock().run(),
+    command: (editor: Editor) => {
+      if (!editor) {
+        console.warn('Editor is not initialized')
+        return
+      }
+      // 切换代码块状态
+      editor.chain().focus().toggleCodeBlock().run()
+    },
+  },
+  {
+    text: '恢复默认节点',
+    command: (editor: Editor) => {
+      if (!editor) {
+        console.warn('Editor is not initialized')
+        return
+      }
+      editor.commands.clearNodes();
+    }
   },
   {
     text: '删除',
-    command: () => {
-      if (!props?.editor) return
-      const { state, commands } = props.editor
-      const { $from } = state.selection
-      const nodeType = $from.node(1).type.name
-      if (nodeType === 'table') {
-        commands.deleteTable()
-      } else {
-        commands.deleteNode(nodeType)
+    command: (editor: Editor) => {
+      if (!editor) {
+        console.warn('Editor is not initialized')
+        return
       }
-    },
-  }
+      editor.commands.deleteSelection();
+    }
+  },
 ])
+
+const handCommand = (command: (editor: Editor) => void) => {
+  if (props.editor) {
+    command(props.editor)
+    visible.value = false
+  } else {
+    console.warn('Editor instance is not available')
+  }
+}
 
 </script>
 
 <style lang="scss">
 .vue3-drag-hand {
-  position: fixed !important;
+  position: fixed;
   display: flex;
-  flex-direction: row;
+  align-items: center;
   opacity: 1;
-  transition: opacity 0.2s ease-in;
-  z-index: 50; /* 与代码块协调 */
-  width: 24px; /* 调整宽度，仅一个图标 */
-  margin-left: -20px; /* 保持偏移，避免遮挡内容 */
+  transition: opacity 0.3s ease, transform 0.2s ease;
+  z-index: 50;
+  width: 28px; /* 略增宽度，优化视觉 */
+  margin-left: -24px; /* 调整偏移 */
   margin-top: 2px; /* 微调垂直位置 */
-}
-
-.vue3-drag-hand .icon {
-    padding: 4px;
-  font-size: 18px; /* 保持原图标大小 */
-  font-weight: 600;
-  color: white;
-  border-radius: 4px;
-  transition: background-color 0.2s, color 0.2s;
-  background:var(--primary-green);
-  &:hover {
-    background-color: var(--selection-bg); /* 与代码块悬浮效果一致 */
-  }
-}
-
-.vue3-drag-hand .drag-hand {
-  cursor: grab;
+  transform: translateY(0); /* 用于动画效果 */
 }
 
 .vue3-drag-hand.hide {
   opacity: 0;
+  transform: translateY(-10px); /* 隐藏时轻微上移 */
   pointer-events: none;
+}
+.vue3-drag-hand.active.hide{
+  opacity: 1;
+  transform: translateY(0); /* 保持位置 */
+  pointer-events: auto;
+}
+
+.vue3-drag-hand .icon {
+  padding: 6px;
+  font-size: 18px;
+  color: #fff;
+  border-radius: 6px;
+  background: var(--primary-green, #52c41a); /* 默认绿色背景 */
+  transition: all 0.3s ease; /* 统一过渡效果 */
+  cursor: grab;
+}
+
+.vue3-drag-hand .icon:hover {
+  background: var(--selection-bg, #1890ff); /* 悬浮蓝色 */
+  transform: scale(1.1); /* 轻微放大 */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* 增加阴影 */
 }
 
 .custom-menu-wrapper {
-  max-height: 240px; /* 紧凑高度 */
-  overflow-y: auto; /* 垂直滚动条 */
-  padding: 6px;
-  background: #ffffff;
-  border-radius: 6px; /* 与代码块圆角一致 */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* 与代码块阴影一致 */
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 8px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* 更柔和阴影 */
+  animation: fadeIn 0.2s ease-in; /* 淡入动画 */
 }
 
 .custom-menu {
   display: flex;
   flex-direction: column;
-  gap: 6px; /* 紧凑间距 */
-  width: auto; /* 紧凑宽度 */
+  gap: 4px; /* 更紧凑间距 */
+  width: 140px; /* 固定宽度，优化对齐 */
   padding: 0;
   background: transparent;
 }
@@ -130,49 +153,55 @@ const insertMenu = reactive([
 .tool-menu-item {
   display: flex;
   align-items: center;
-  justify-content: start;
-  padding: 6px; /* 紧凑内边距 */
-  min-height: 28px; /* 紧凑高度 */
-  border-radius: 4px;
-  font-size: 13px; /* 紧凑字体 */
+  padding: 8px 10px;
+  min-height: 32px;
+  border-radius: 6px;
+  font-size: 14px;
   color: #333;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: #e6f7ff; /* 与代码块一致 */
-  }
-
-  .menu-item-text {
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; /* 长文本省略 */
-  }
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
-/* 分割线样式 */
-:deep(.ant-menu-divider) {
-  grid-column: span 3; /* 跨3列 */
-  margin: 6px 0;
-  border-top: 1px solid #e8ecef; /* 与代码块边框一致 */
+.tool-menu-item:hover {
+  background: #e6f7ff;
+  color: #1890ff; /* 悬浮时文字变蓝 */
+  transform: translateX(2px); /* 轻微右移动画 */
 }
 
-/* 自定义滚动条样式，与代码块一致 */
+.menu-item-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 自定义滚动条样式 */
 .custom-menu-wrapper::-webkit-scrollbar {
   width: 6px;
 }
 
 .custom-menu-wrapper::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #f5f5f5;
   border-radius: 4px;
 }
 
 .custom-menu-wrapper::-webkit-scrollbar-thumb {
-  background: #c1c7d0;
+  background: #bfbfbf;
   border-radius: 4px;
 }
 
 .custom-menu-wrapper::-webkit-scrollbar-thumb:hover {
-  background: #a0a6b0;
+  background: #8c8c8c;
+}
+
+/* 淡入动画 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

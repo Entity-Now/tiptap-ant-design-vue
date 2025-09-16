@@ -39,7 +39,6 @@ function absoluteRect(node: Element) {
 }
 
 function nodeDOMAtCoords(coords: { x: number; y: number }, options: GlobalDragHandleOptions) {
-  // 更新选择器以支持 Tiptap 3.0 的节点类型
   const selectors = [
     'li',
     'p:not(:first-child)',
@@ -51,7 +50,8 @@ function nodeDOMAtCoords(coords: { x: number; y: number }, options: GlobalDragHa
     'h4',
     'h5',
     'h6',
-    '[data-type="taskItem"]', // 支持任务列表
+    '[data-type="taskItem"]',
+    'table',
     ...options.customNodes.map((node) => `[data-type="${node}"]`),
   ].join(', ')
   return document
@@ -76,8 +76,31 @@ function calcNodePos(pos: number, view: EditorView) {
   return $pos.depth > 1 ? $pos.before($pos.depth) : pos
 }
 
+function isSpecialNode(node: Element, view: EditorView): { isSpecial: boolean; node: Element | null; type: string | null } {
+  let targetNode = node
+  let type: string | null = null
+
+  // 处理 table：找到最近的 table 父节点
+  if (node.closest('table')) {
+    targetNode = node.closest('table')!
+    type = 'table'
+  }
+  // 处理 codeBlock：检查 data-type 或 pre 标签
+  else if (node.matches('[data-type="codeBlock"], pre')) {
+    targetNode = node
+    type = 'codeBlock'
+  }
+
+  return {
+    isSpecial: !!type,
+    node: targetNode,
+    type,
+  }
+}
+
 function DragHandlePlugin(options: GlobalDragHandleOptions & { pluginKey: string }) {
   let listType = ''
+  let dragHandleElement: HTMLElement | null = null
 
   function handleDragStart(event: DragEvent, view: EditorView) {
     view.focus()
@@ -143,7 +166,43 @@ function DragHandlePlugin(options: GlobalDragHandleOptions & { pluginKey: string
     view.dragging = { slice, move: event.ctrlKey }
   }
 
-  let dragHandleElement: HTMLElement | null = null
+  function handleClick(event: MouseEvent, view: EditorView) {
+    view.focus()
+
+    const node = nodeDOMAtCoords(
+      { x: event.clientX + 50 + options.dragHandleWidth, y: event.clientY },
+      options,
+    )
+    if (!(node instanceof Element)) return
+
+    // 检查是否为特殊节点（table 或 codeBlock）
+    const { isSpecial, node: targetNode, type } = isSpecialNode(node, view)
+    if (!targetNode) return
+
+    let nodePos = nodePosAtDOM(targetNode, view, options)
+    if (nodePos == null || nodePos < 0) return
+    nodePos = calcNodePos(nodePos, view)
+
+    // 处理特殊节点的选择
+    if (isSpecial) {
+      const $pos = view.state.doc.resolve(nodePos)
+      if (type === 'table') {
+        // 选中整个 table 节点
+        const tablePos = $pos.start($pos.depth)
+        const selection = NodeSelection.create(view.state.doc, tablePos - 1)
+        view.dispatch(view.state.tr.setSelection(selection))
+      } else if (type === 'codeBlock') {
+        // 选中整个 codeBlock 节点
+        const selection = NodeSelection.create(view.state.doc, nodePos)
+        view.dispatch(view.state.tr.setSelection(selection))
+      }
+    } else {
+      // 普通节点的默认选中逻辑
+      const selection = NodeSelection.create(view.state.doc, nodePos)
+      view.dispatch(view.state.tr.setSelection(selection))
+    }
+    
+  }
 
   function hideDragHandle() {
     if (dragHandleElement) {
@@ -180,6 +239,7 @@ function DragHandlePlugin(options: GlobalDragHandleOptions & { pluginKey: string
       dragHandleElement.classList.add('drag-handle')
 
       dragHandleElement.addEventListener('dragstart', (e) => handleDragStart(e, view))
+      dragHandleElement.addEventListener('click', (e) => handleClick(e, view))
       dragHandleElement.addEventListener('drag', (e) => {
         hideDragHandle()
         const scrollY = window.scrollY
@@ -202,6 +262,7 @@ function DragHandlePlugin(options: GlobalDragHandleOptions & { pluginKey: string
             dragHandleElement?.remove?.()
           }
           dragHandleElement?.removeEventListener('dragstart', (e) => handleDragStart(e, view))
+          dragHandleElement?.removeEventListener('click', (e) => handleClick(e, view))
           dragHandleElement?.removeEventListener('drag', () => {})
           dragHandleElement = null
           view?.dom?.parentElement?.removeEventListener('mouseout', hideHandleOnEditorOut)
@@ -225,6 +286,10 @@ function DragHandlePlugin(options: GlobalDragHandleOptions & { pluginKey: string
             return
           }
 
+          if (dragHandleElement?.classList.contains('active')) {
+            return;
+          }
+
           const compStyle = window.getComputedStyle(node)
           const parsedLineHeight = parseInt(compStyle.lineHeight, 10)
           const lineHeight = isNaN(parsedLineHeight) ? parseInt(compStyle.fontSize) * 1.2 : parsedLineHeight
@@ -244,7 +309,7 @@ function DragHandlePlugin(options: GlobalDragHandleOptions & { pluginKey: string
           showDragHandle()
         },
         keydown: () => hideDragHandle(),
-        wheel: () => hideDragHandle(), // 替换 mousewheel 为 wheel
+        wheel: () => hideDragHandle(),
         dragstart: (view) => view.dom.classList.add('dragging'),
         drop: (view, event) => {
           view.dom.classList.remove('dragging')

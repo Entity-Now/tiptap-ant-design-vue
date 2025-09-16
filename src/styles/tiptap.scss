@@ -32,6 +32,19 @@
   }
 }
 
+.drop-target{
+  background: var(--highlight-bg) !important;
+}
+
+.drag-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #ccc;
+  cursor: grab;
+  z-index: 1000;
+}
+
 .dropdown {
   list-style: none;
   &__operation {
