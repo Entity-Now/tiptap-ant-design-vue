@@ -39,6 +39,6 @@ jobs:
       # 4. 安装依赖并发布到 npm
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build:lib
-      - run: pnpm publish --access public
+      - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
