@@ -34,7 +34,7 @@ export default ({ mode }: any) => {
 			alias: {
 				"@": resolve(__dirname, "./src"),
 				"demo": resolve(__dirname, "./demo"),
-				"tiptap-ant-design-vue": resolve(__dirname, "./src/index.ts")
+				"tiptap-ant-design-vue": resolve(__dirname, "./src")
 			}
 		},
 		build: IS_DEMO
