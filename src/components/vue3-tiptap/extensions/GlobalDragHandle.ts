@@ -21,10 +21,19 @@ export interface GlobalDragHandleOptions {
 
 function absoluteRect(node: Element) {
   const data = node.getBoundingClientRect()
-  const modal = node.closest('[role="dialog"]')
+  const modal = node.closest('[data-display="translate"]')
+  const displayModal = node.closest('[data-display="flex"]')
 
   if (modal && window.getComputedStyle(modal).transform !== 'none') {
     const modalRect = modal.getBoundingClientRect()
+    return {
+      top: data.top - modalRect.top,
+      left: data.left - modalRect.left,
+      width: data.width,
+    }
+  }
+  if(displayModal && window.getComputedStyle(displayModal)){
+    const modalRect = displayModal.getBoundingClientRect()
     return {
       top: data.top - modalRect.top,
       left: data.left - modalRect.left,
@@ -296,7 +305,7 @@ function DragHandlePlugin(options: GlobalDragHandleOptions & { pluginKey: string
           const paddingTop = parseInt(compStyle.paddingTop, 10)
 
           const rect = absoluteRect(node)
-          rect.top += (lineHeight - 24) / 2
+          // rect.top += (lineHeight) / 2
           rect.top += paddingTop
           if (node.matches('ul:not([data-type=taskList]) li, ol li')) {
             rect.left -= options.dragHandleWidth
@@ -350,7 +359,7 @@ const GlobalDragHandle = Extension.create<GlobalDragHandleOptions>({
 
   addOptions() {
     return {
-      dragHandleWidth: 20,
+      dragHandleWidth: 35,
       scrollTreshold: 100,
       excludedTags: [],
       customNodes: [],

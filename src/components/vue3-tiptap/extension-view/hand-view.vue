@@ -99,8 +99,6 @@ const handCommand = (command: (editor: Editor) => void) => {
   transition: opacity 0.3s ease, transform 0.2s ease;
   z-index: 50;
   width: 28px; /* 略增宽度，优化视觉 */
-  margin-left: -24px; /* 调整偏移 */
-  margin-top: 2px; /* 微调垂直位置 */
   transform: translateY(0); /* 用于动画效果 */
 }
 
