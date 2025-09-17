@@ -7,6 +7,7 @@ export interface ImageOptions {
 }
 
 const CustomImage = Image.extend<ImageOptions>({
+  
 	addOptions() {
 		return {
 			...this.parent?.(),
