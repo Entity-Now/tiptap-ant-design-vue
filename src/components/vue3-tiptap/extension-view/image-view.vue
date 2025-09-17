@@ -1,44 +1,51 @@
-<template>
-	<node-view-wrapper as="span" :class="imageViewClass">
-		<div class="image-view__body">
-			<a-popover placement="top" trigger="click">
-				<template #content>
-					<div class="popover__tools">
-						<div
-							class="popover__item"
-							v-for="display in displayCollection"
-							:key="display"
-							@click="updateAttributes({ display })"
-						>
-							{{ display }}
-						</div>
-						<div class="popover__item" @click="deleteNode()">
-							<DeleteOutlined />
-						</div>
-					</div>
-				</template>
-				<img
-					:src="src"
-					:title="node.attrs.title"
-					:alt="node.attrs.alt"
-					:width="width"
-					:height="height"
-					@click="selectImage"
-				/>
-			</a-popover>
 
-			<div class="image-resizer" v-show="resizing || selected">
-				<span
-					v-for="direction in resizeDirections"
-					:key="direction"
-					:class="`image-resizer__handler--${direction}`"
-					class="image-resizer__handler"
-					@mousedown="onMouseDown($event, direction)"
-				/>
-			</div>
-		</div>
-	</node-view-wrapper>
+<template>
+  <!-- inline 节点，用 span 包裹，并禁用编辑 -->
+  <node-view-wrapper as="span" :class="imageViewClass" contenteditable="false">
+    <!-- 把 div 改成 span，保持合法的内联内容模型 -->
+    <span class="image-view__body">
+      <a-popover placement="top" trigger="click">
+        <template #content>
+          <span class="popover__tools">
+            <span
+              class="popover__item"
+              v-for="display in displayCollection"
+              :key="display"
+              @click="updateAttributes({ display })"
+            >
+              {{ display }}
+            </span>
+            <span class="popover__item" @click="deleteNode()">
+              <DeleteOutlined />
+            </span>
+          </span>
+        </template>
+
+        <img
+          :src="src"
+          :title="props.node.attrs.title"
+          :alt="props.node.attrs.alt"
+          :width="width"
+          :height="height"
+          draggable="false"
+          @click="selectImage"
+        ></img>
+      </a-popover>
+
+      <!-- 这里也改成 span（或多个 span），避免块级元素 -->
+      <span class="image-resizer" v-show="resizing || selected">
+        <span
+          v-for="direction in resizeDirections"
+          :key="direction"
+          :class="`image-resizer__handler--${direction}`"
+          class="image-resizer__handler"
+          @mousedown="onMouseDown($event, direction)"
+        />
+      </span>
+    </span>
+  </node-view-wrapper>
 </template>
+
 
 <script setup lang="ts">
 import { NodeViewWrapper, nodeViewProps } from "@tiptap/vue-3";

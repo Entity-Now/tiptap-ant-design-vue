@@ -101,7 +101,9 @@ const extensions = [
 			class: "x-link"
 		}
 	}),
-	Images,
+	Images.configure({
+		allowBase64: true
+	}),
 	Video,
 	Table.configure({
 		HTMLAttributes: {
