@@ -22,7 +22,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: latest  # 或指定版本，如 "8.15.0"
+          version: 9
 
       # 3. 缓存 pnpm 依赖
       - name: Cache pnpm dependencies
