@@ -18,7 +18,7 @@ jobs:
      # 1. 安装 Node.js
       - uses: actions/setup-node@v3
         with:
-          node-version: '22.11.0'
+          node-version: '22'
           registry-url: 'https://registry.npmjs.org'
 
       # 2. 安装 pnpm（改用官方 pnpm/action-setup 或 npm 安装）
