@@ -26,6 +26,5 @@ lib
 
 # Package manager lockfiles (except pnpm-lock.yaml)
 package-lock.json
-pnpm-lock.yaml
 yarn.lock
 
