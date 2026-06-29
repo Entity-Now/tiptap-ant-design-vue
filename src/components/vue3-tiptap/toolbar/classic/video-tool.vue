@@ -1,4 +1,4 @@
-<template>
+<template v-if="hasUploadCallback">
 	<a-popover placement="bottom" trigger="click">
 		<template #content>
 			<ul class="dropdown">
@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject } from "vue";
+import { ref, inject, computed } from "vue";
 import { uploadVideoKey } from '../../vue3-tiptap'
 import { VideoCameraOutlined, CloudUploadOutlined, PaperClipOutlined } from "@ant-design/icons-vue";
 import { validateUrl } from "@/utils/pattern.js";
@@ -67,6 +67,7 @@ const headers = [
 ];
 
 const uploadVideo = inject<any>(uploadVideoKey);
+const hasUploadCallback = computed(() => typeof uploadVideo === "function");
 const insertRef = ref();
 const uploadRef = ref();
 

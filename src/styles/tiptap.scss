@@ -45,6 +45,70 @@
 	z-index: 1000;
 }
 
+/* Dragging source node styling */
+.tiptap-dragging-source {
+	opacity: 0.35 !important;
+	outline: 2px dashed var(--primary-green, #2f855a) !important;
+	outline-offset: 2px;
+	border-radius: 4px;
+	transition: opacity 0.2s ease;
+}
+
+/* Drop target block and horizontal indicator lines */
+.tiptap-drop-target {
+	position: relative;
+	border-radius: 4px;
+	background-color: rgba(47, 133, 90, 0.03); /* Subtle green tint indicating target block */
+	transition: background-color 0.2s ease;
+}
+
+.tiptap-drop-target-above {
+	&::before {
+		content: "";
+		position: absolute;
+		top: -2px;
+		left: 0;
+		right: 0;
+		height: 4px;
+		background-color: var(--primary-green, #2f855a);
+		border-radius: 2px;
+		z-index: 100;
+		pointer-events: none;
+		animation: pulse-drop-line 1.5s infinite;
+	}
+}
+
+.tiptap-drop-target-below {
+	&::after {
+		content: "";
+		position: absolute;
+		bottom: -2px;
+		left: 0;
+		right: 0;
+		height: 4px;
+		background-color: var(--primary-green, #2f855a);
+		border-radius: 2px;
+		z-index: 100;
+		pointer-events: none;
+		animation: pulse-drop-line 1.5s infinite;
+	}
+}
+
+@keyframes pulse-drop-line {
+	0% {
+		opacity: 0.6;
+		box-shadow: 0 0 2px rgba(47, 133, 90, 0.4);
+	}
+	50% {
+		opacity: 1;
+		box-shadow: 0 0 8px rgba(47, 133, 90, 0.8);
+	}
+	100% {
+		opacity: 0.6;
+		box-shadow: 0 0 2px rgba(47, 133, 90, 0.4);
+	}
+}
+
 .dropdown {
 	list-style: none;
 	&__operation {

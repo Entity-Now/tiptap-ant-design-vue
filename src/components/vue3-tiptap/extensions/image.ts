@@ -1,12 +1,12 @@
 import { VueNodeViewRenderer } from "@tiptap/vue-3";
-import { Image } from "@tiptap/extension-image";
+import { Image, ImageOptions as BaseImageOptions } from "@tiptap/extension-image";
 import ImageView from "@/components/vue3-tiptap/extension-view/image-view.vue";
 
-export interface ImageOptions {
+export interface ImageOptions extends BaseImageOptions {
 	display?: "inline" | "block";
 }
 
-const CustomImage = Image.extend<ImageOptions>({
+const CustomImage = Image.extend<any>({
   
 	addOptions() {
 		return {

@@ -2,7 +2,7 @@
 		<a-config-provider :getPopupContainer="getPopupContainer">
 		<div ref="Vue3TiptapContainer" :class="['vue3-tiptap', isFullScreen ? 'editor--fullscreen' : '']">
 			<template v-if='editor'>
-				<Toolbar :editor="editor">
+				<Toolbar :editor="editor" :toolbar="props.toolbar">
 					<template #tool>
 						<slot name="tool"></slot>
 					</template>
@@ -26,7 +26,8 @@ import {
 	ToggleFullScreenKey,
 	IsFullScreenKey,
 	uploadImageKey,
-	uploadVideoKey
+	uploadVideoKey,
+	uploadPdfKey
 } from "./vue3-tiptap";
 import handView from "./extension-view/hand-view.vue";
 
@@ -67,6 +68,7 @@ const extensions = [
 		orderedList: false,
 		bulletList: false,
 		codeBlock: false,
+		dropcursor: false,
 		blockquote: {
 			HTMLAttributes: {
 				class: "x-blockquote"
@@ -80,7 +82,11 @@ const extensions = [
 	}),
 	Hand.configure({
 		dragHandleSelector: ".vue3-drag-hand",
-		dropTargetClass: 'highlight-drop-target'
+		dropTargetClass: 'tiptap-drop-target'
+	}),
+	Dropcursor.configure({
+		color: "var(--primary-green, #2f855a)",
+		width: 3
 	}),
 	Underline.configure({
 		HTMLAttributes: {
@@ -155,6 +161,7 @@ const getPopupContainer = (el: any, dialogContext: any) => {
 provide(EditorKey, editor);
 provide(uploadImageKey, props.uploadImage);
 provide(uploadVideoKey, props.uploadVideo);
+provide(uploadPdfKey, props.uploadPdf);
 provide(IsFullScreenKey, isFullScreen.value);
 provide(ToggleFullScreenKey, toggleFullscreen);
 

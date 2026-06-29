@@ -1,34 +1,34 @@
 <template>
 	<div class="toolbar">
-		<ToolTemplate v-for="tool in toolbars" :editor="editor" :option="tool" :key="tool.name" />
+		<ToolTemplate v-for="tool in visibleToolbars" :editor="editor" :option="tool" :key="tool.name" />
 
 		<!-- 链接 -->
-		<LinkTool :editor="editor" />
+		<LinkTool v-if="isToolVisible('link')" :editor="editor" />
 		
-		<Dvider />
+		<Dvider v-if="isToolVisible('divider') || isToolVisible('|')" />
 		<!-- 格式刷 -->
-		<FormatBrush :editor="editor" />
+		<FormatBrush v-if="isToolVisible('format-brush') || isToolVisible('formatbrush')" :editor="editor" />
 		<!-- 字号 -->
-		<FontSize :editor="editor" />
+		<FontSize v-if="isToolVisible('font-size') || isToolVisible('fontsize')" :editor="editor" />
 		<!-- 行高 -->
-		<LineHeight :editor="editor" />
-		<FontColor :editor="editor" />
-		<BgColor :editor="editor" />
-		<HeaderTool :editor="editor" />
-		<FontFamily :editor="editor" />
-		<ImageTool :editor="editor" />
-		<VideoTool :editor="editor" />
-		<PdfTool :editor="editor" />
-		<TableTool :editor="editor" />
+		<LineHeight v-if="isToolVisible('line-height') || isToolVisible('lineheight')" :editor="editor" />
+		<FontColor v-if="isToolVisible('font-color') || isToolVisible('fontcolor')" :editor="editor" />
+		<BgColor v-if="isToolVisible('bg-color') || isToolVisible('bgcolor')" :editor="editor" />
+		<HeaderTool v-if="isToolVisible('header')" :editor="editor" />
+		<FontFamily v-if="isToolVisible('font-family') || isToolVisible('fontfamily')" :editor="editor" />
+		<ImageTool v-if="isToolVisible('image')" :editor="editor" />
+		<VideoTool v-if="isToolVisible('video')" :editor="editor" />
+		<PdfTool v-if="isToolVisible('pdf')" :editor="editor" />
+		<TableTool v-if="isToolVisible('table')" :editor="editor" />
 		<!-- 文本对齐 -->
-		<FontAlign :editor="editor" />
+		<FontAlign v-if="isToolVisible('align')" :editor="editor" />
 		<!-- 有序列表 -->
-		<OrderedList :editor="editor" />
+		<OrderedList v-if="isToolVisible('ordered-list') || isToolVisible('orderedlist')" :editor="editor" />
 		<!-- 无序列表 -->
-		<BulletList :editor="editor" />
+		<BulletList v-if="isToolVisible('bullet-list') || isToolVisible('bulletlist')" :editor="editor" />
 
 		<!-- 全屏 -->
-		<FullScreen :editor="editor" />
+		<FullScreen v-if="isToolVisible('fullscreen')" :editor="editor" />
 		<!-- 查找与替换 -->
 		<Teleport to="body">
 			<FindReplace :editor="editor" :visible="visible" :closeModal="closeModal" />
@@ -42,7 +42,7 @@
 <script setup lang="ts">
 import type { Editor } from "@tiptap/core";
 import type { OptionProps } from "./classic";
-import { reactive } from "vue";
+import { reactive, computed } from "vue";
 import { createToolbarOptions } from "./classic-options";
 import { useModal } from "@/hooks/useModal";
 import ToolTemplate from "./tool-template.vue";
@@ -67,10 +67,12 @@ import LineHeight from "./font-style/line-height.vue";
 
 interface ToolbarProps {
 	editor: Editor;
+	toolbar?: string[];
 }
-const { visible, toggleModal, closeModal } = useModal();
 
 const props = defineProps<ToolbarProps>();
+const { visible, toggleModal, closeModal } = useModal();
+
 const toolbars: OptionProps[] = reactive(
 	createToolbarOptions(props.editor, {
 		searchoutlined: {
@@ -78,6 +80,34 @@ const toolbars: OptionProps[] = reactive(
 		}
 	})
 );
+
+const isToolVisible = (name: string) => {
+	if (!props.toolbar || props.toolbar.length === 0) {
+		return true;
+	}
+	const cleanName = name.toLowerCase().replace(/[-_]/g, "");
+	return props.toolbar.some(t => {
+		const cleanT = t.toLowerCase().replace(/[-_]/g, "");
+		return cleanT === cleanName || isNameMatched(cleanName, cleanT);
+	});
+};
+
+const isNameMatched = (cleanName: string, cleanT: string) => {
+	if (cleanT === "undo" && cleanName === "undooutlined") return true;
+	if (cleanT === "redo" && cleanName === "redooutlined") return true;
+	if ((cleanT === "clearformat" || cleanT === "clear") && cleanName === "deleteoutlined") return true;
+	if ((cleanT === "horizontal" || cleanT === "horizontalrule") && cleanName === "minusoutlined") return true;
+	if (cleanT === "indent" && cleanName === "menuunfoldoutlined") return true;
+	if (cleanT === "outdent" && cleanName === "menufoldoutlined") return true;
+	if (cleanT === "codeblock" && cleanName === "codeblock") return true;
+	if (cleanT === "search" && cleanName === "searchoutlined") return true;
+	if (cleanT === "unsetlink" && cleanName === "unsetlink") return true;
+	return false;
+};
+
+const visibleToolbars = computed(() => {
+	return toolbars.filter(tool => isToolVisible(tool.name));
+});
 </script>
 
 <style scoped>

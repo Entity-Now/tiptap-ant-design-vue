@@ -17,7 +17,9 @@
 			</div>
 		</div>
 		<div class="right">
-			<div class="editor-box"><Vue3Tiptap v-model:content="content" :uploadImage="uploadImageHandle"/></div>
+			<div class="editor-box">
+				<Vue3Tiptap v-model:content="content" />
+			</div>
 		</div>
 	</div>
 </template>
@@ -30,12 +32,12 @@ import "highlight.js/scss/github.scss"
 
 const content = ref(``)
 
-const uploadImageHandle = ()=>{
+const uploadImageHandle = () => {
 	console.log('上传记录..');
-	return Promise.resolve({url: 'http://localhost:8888/src/assets/home-logo.jpeg',size: 123,fileName: 'name.png'})
+	return Promise.resolve({ url: 'http://localhost:8888/src/assets/home-logo.jpeg', size: 123, fileName: 'name.png' })
 }
 
-watch(()=> content.value,(val)=>{
+watch(() => content.value, (val) => {
 	console.log(val);
 })
 </script>
@@ -56,19 +58,22 @@ watch(()=> content.value,(val)=>{
 	background:
 		linear-gradient(0deg, transparent 50%, rgba(0, 0, 0, 0.09) 51%, transparent 53%),
 		linear-gradient(90deg, transparent 50%, rgba(0, 0, 0, 0.09) 51%, transparent 53%);
-	background-size: 20px 20px; /* 网格单元大小 */
+	background-size: 20px 20px;
+	/* 网格单元大小 */
 
 	.left {
 		width: 50%;
 		display: flex;
 		justify-content: center;
 		align-items: center;
+
 		.card-wrapper {
 			display: flex;
 			flex-direction: column;
 			gap: 30px;
 			border-radius: 10px;
 			overflow: hidden;
+
 			.title-wrap {
 				margin: 0 auto;
 				width: 550px;
@@ -79,6 +84,7 @@ watch(()=> content.value,(val)=>{
 				border: 3px solid rgba(102, 36, 189, 0.3);
 				border-radius: 15px;
 				background: rgba(255, 255, 255, 0.7);
+
 				h1 {
 					font-size: 45px;
 					line-height: 1;
@@ -88,48 +94,57 @@ watch(()=> content.value,(val)=>{
 					background-clip: text;
 					animation: huerotate 10s infinite;
 				}
+
 				h4 {
 					font-size: 15px;
 					line-height: 1;
 					letter-spacing: 1px;
 					color: #03a9f4;
 				}
+
 				.logo {
 					width: 85px;
 					height: 85px;
 					border-radius: 15%;
 					overflow: hidden;
 					mask: linear-gradient(45deg, #000, transparent);
+
 					img {
 						width: 100%;
 						height: 100%;
 					}
 				}
+
 				.logo {
 					width: 100px;
 					height: 100px;
 					border-radius: 15%;
 					overflow: hidden;
+
 					img {
 						width: 100%;
 						height: 100%;
 					}
 				}
 			}
+
 			.bg-img {
 				width: 650px;
+
 				img {
 					width: 100%;
 				}
 			}
 		}
 	}
+
 	.right {
 		width: 50%;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		padding-right: 40px;
+
 		.editor-box {
 			width: 100%;
 			height: 600px;

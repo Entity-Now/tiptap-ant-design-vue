@@ -16,12 +16,7 @@
         </a-select>
       </div>
       <!-- 代码块内容 -->
-      <pre class="code-block-content">
-        <node-view-content
-          :class="`hljs language-${selectedLanguage}`"
-          as="code"
-        />
-      </pre>
+      <pre class="code-block-content"><node-view-content :class="`hljs language-${selectedLanguage}`" as="code" /></pre>
     </div>
   </node-view-wrapper>
 </template>
@@ -46,91 +41,103 @@ const selectedLanguage = computed({
 
 <style lang="scss" scoped>
 .code-block-view {
-  //margin: 12px 0; /* 与拖拽把手协调的垂直间距 */
-  border-radius: 6px; /* 圆角，现代感 */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
-  overflow: hidden; /* 确保圆角生效 */
+  margin: 16px 0;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--secondary-gray, #e2e8f0);
+  background: #f8fafc; /* Slate 50 background */
 }
 
 .code-block-container {
   position: relative;
-  border: 1px solid #e8ecef; /* 柔和边框 */
-  background: #f9fafb; /* 浅灰背景 */
-  min-height: 120px; /* 紧凑最小高度 */
-  max-height: 400px; /* 限制最大高度 */
-  overflow-y: auto; /* 垂直滚动条 */
+  min-height: 80px;
+  max-height: 450px;
+  overflow-y: auto;
   padding: 0;
   box-sizing: border-box;
 
   .code-block-tools {
-    position: sticky; /* 工具栏随滚动保持可见 */
+    position: sticky;
     top: 0;
     z-index: 10;
     width: 100%;
-    height: 42px; /* 进一步减小工具栏高度 */
-    background: #ffffff; /* 白色背景 */
-    border-bottom: 1px solid #e8ecef; /* 分隔线 */
+    height: 32px; /* 紧凑高度 */
+    background: #f1f5f9; /* Slate 100 background */
+    border-bottom: 1px solid var(--secondary-gray, #e2e8f0);
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding: 8px;
+    padding: 0 12px;
 
     .language-select {
-      width: 120px; /* 固定宽度 */
-      font-size: 13px; /* 小字体 */
-      color: #333;
+      width: 95px; /* 更紧凑的宽度 */
+      font-size: 12px;
+      color: var(--accent-gray, #64748b);
 
       :deep(.ant-select-selector) {
-        background: #f0f2f5 !important; /* 下拉框背景 */
+        background: transparent !important;
         border-radius: 4px !important;
-        height: 24px !important; /* 减小选择框高度 */
+        height: 20px !important;
         display: flex;
         align-items: center;
-        transition: background 0.2s;
+        padding: 0 6px !important;
+        transition: all 0.2s;
       }
 
       :deep(.ant-select-selector:hover) {
-        background: #e6f7ff !important; /* 悬浮效果，与拖拽把手一致 */
+        background: rgba(47, 133, 90, 0.08) !important;
+        color: var(--primary-green, #2f855a) !important;
+      }
+
+      :deep(.ant-select-selection-item) {
+        font-size: 11px !important;
+        line-height: 20px !important;
+        font-weight: 500;
+        color: var(--accent-gray, #64748b) !important;
+      }
+      
+      :deep(.ant-select-arrow) {
+        font-size: 9px;
+        color: var(--accent-gray, #64748b) !important;
       }
     }
   }
 
   .code-block-content {
-    margin: 0 !important; /* 移除 pre 的默认外边距 */
-    padding: 4px  !important; /* 适配工具栏高度，优化间距 */
+    margin: 0 !important;
+    padding: 14px 18px !important; /* 舒适的代码缩进间距 */
     background: transparent;
-    overflow-x: auto; /* 横向滚动条 */
-    font-family: 'Fira Code', 'Consolas', monospace; /* 代码字体 */
-    font-size: 14px; /* 字体大小 */
-    line-height: 1.4; /* 减小行高，紧凑布局 */
+    overflow-x: auto;
+    font-family: Consolas, "Fira Code", "JetBrains Mono", Courier, monospace;
+    font-size: 13px; /* 经典代码大小 */
+    line-height: 1.55;
 
     .hljs, code {
-      background: transparent !important; /* 避免高亮库干扰 */
-      color: #24292e; /* 代码颜色 */
-      margin: 0; /* 移除 code 的默认外边距 */
-      padding: 0; /* 移除 code 的内边距 */
-      display: block; /* 确保 code 块级显示 */
+      background: transparent !important;
+      color: #334155; /* Slate 700 standard text */
+      margin: 0;
+      padding: 0;
+      display: block;
     }
   }
 }
 
 /* 自定义滚动条样式 */
 .code-block-container::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 .code-block-container::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
+  background: transparent;
 }
 
 .code-block-container::-webkit-scrollbar-thumb {
-  background: #c1c7d0;
-  border-radius: 4px;
+  background: var(--secondary-gray, #cbd5e1);
+  border-radius: 3px;
 }
 
 .code-block-container::-webkit-scrollbar-thumb:hover {
-  background: #a0a6b0;
+  background: var(--accent-gray, #94a3b8);
 }
 </style>

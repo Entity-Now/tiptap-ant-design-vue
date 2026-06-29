@@ -1,4 +1,4 @@
-<template>
+<template v-if="hasUploadCallback">
 	<a-popover placement="bottom" trigger="click">
 		<template #content>
 			<ul class="dropdown">
@@ -7,6 +7,9 @@
 				</li>
 				<li class="dropdown__opeartion" @click="insertLocalPdf">
 					<CloudUploadOutlined style="margin-right: 5px" />上传本地PDF
+				</li>
+				<li class="dropdown__opeartion" @click="customUploadPdf">
+					<CloudUploadOutlined style="margin-right: 5px" />上传PDF到服务器
 				</li>
 			</ul>
 		</template>
@@ -35,7 +38,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, inject, computed } from "vue";
+import { uploadPdfKey } from '../../vue3-tiptap'
 import { validateUrl } from "@/utils/pattern";
 import { FilePdfOutlined, CloudUploadOutlined, DisconnectOutlined } from "@ant-design/icons-vue";
 import InsertPDF from "./insert-model/index.vue";
@@ -44,6 +48,9 @@ import { _getBase64 } from "@/utils/index";
 
 const emit = defineEmits(["emitPdf"]);
 const props = defineProps(["editor"]);
+
+const uploadPdf = inject<any>(uploadPdfKey);
+const hasUploadCallback = computed(() => typeof uploadPdf === "function");
 
 const insertRef = ref();
 const uploadRef = ref();
@@ -93,6 +100,33 @@ const handleEmit = async ({ url, file, type }: { url: string; file: File; type: 
 const insertLocalPdf = () => {
 	showType.value = 2;
 	uploadRef.value.showModal();
+};
+
+const customUploadPdf = () => {
+	uploadPdf().then((res: {
+		url: string;
+		size?: number;
+		fileName: string;
+	}) => {
+		if (res && res?.url) {
+			if (showType.value === 1) {
+				props.editor.commands.insertContent({
+					type: "text",
+					text: `附件:${res.url}`,
+					marks: [
+						{
+							type: "link",
+							attrs: {
+								href: res.url
+							}
+						}
+					]
+				});
+			} else {
+				props.editor.chain().focus().setIframe({ src: res.url }).run();
+			}
+		}
+	});
 };
 </script>
 
